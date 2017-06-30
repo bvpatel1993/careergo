@@ -3,6 +3,7 @@ package com.albany.career.dao;
 import java.util.List;
 
 import com.albany.career.dto.ApplicantDto;
+import com.albany.career.dto.CompanyDto;
 import com.albany.career.dto.KeyValueDto;
 import com.albany.career.entity.ApplicantForum;
 import com.albany.career.entity.ApplicantGrade;
@@ -12,8 +13,10 @@ import com.albany.career.entity.Degree;
 import com.albany.career.entity.DocumentType;
 import com.albany.career.entity.DocumentsDetails;
 import com.albany.career.entity.EducationDetails;
+import com.albany.career.entity.JobsApplied;
 import com.albany.career.entity.Major;
 import com.albany.career.entity.ProjectDetails;
+import com.albany.career.entity.Rating;
 import com.albany.career.entity.SkillsDetails;
 import com.albany.career.entity.WorkDetails;
 import com.albany.career.utility.FunctionResponse;
@@ -34,7 +37,7 @@ public interface ApplicantDao {
 
 	EducationDetails getEducationDetails(Long eId);
 
-	ApplicantDto getSkillsDetails();
+	ApplicantDto getSkills(Long id);
 
 	SkillsDetails getSkillsDetails(Long sID);
 
@@ -89,5 +92,19 @@ public interface ApplicantDao {
 	ApplicantGrade getApplicantGrade(Long id, Long registerId);
 
 	ApplicantGrade getApplicantGradeObj(Long id);
+
+	List<ApplicantDto> getJobsApplied(Long registerId);
+
+	FunctionResponse updateJobApplied(JobsApplied jobApply);
+
+	List<CompanyDto> getJobsAppliedList(Long id);
+
+	List<KeyValueDto> getCompanyList();
+
+	List<CompanyDto> getCompanyRates(Long id);
+
+	FunctionResponse updateCompanyRatings(Rating rates);
+
+	List<ApplicantDto> getDoumentsListForPhotos(Long id);
 
 }

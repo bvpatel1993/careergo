@@ -30,5 +30,7 @@ public interface AdminDao {
 
 	List<KeyValueDto> getTestInfoToGrade();
 
+	List<CompanyDto> getAbusiveReviewList();
+
 
 }
