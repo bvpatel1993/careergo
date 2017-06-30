@@ -10,11 +10,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "applicant_documents_type")
-public class DocumentType implements Serializable {
+@Table(name = "job_type")
+public class JobType implements Serializable {
 
 	private Long id;
-	private String documentType;
+	private String jobType;
 	private Boolean status;
 	
 	@Id
@@ -27,12 +27,12 @@ public class DocumentType implements Serializable {
 		this.id = id;
 	}
 	
-	@Column(name = "document_type")
-	public String getDocumentType() {
-		return documentType;
+	@Column(name = "job_type")
+	public String getJobType() {
+		return jobType;
 	}
-	public void setDocumentType(String documentType) {
-		this.documentType = documentType;
+	public void setJobType(String jobType) {
+		this.jobType = jobType;
 	}
 	
 	@Column(name = "status")
@@ -43,19 +43,12 @@ public class DocumentType implements Serializable {
 		this.status = status;
 	}
 	
-	public DocumentType(){
+	public JobType(){
 		
 	}
 	
-	public DocumentType(Long id,String documentType){
+	public JobType(Long id,String jobType){
 		this.setId(id);
-		this.setDocumentType(documentType);
+		this.setJobType(jobType);
 	}
-	
-	public DocumentType(Long id,String documentType,Boolean status){
-		this.setId(id);
-		this.setDocumentType(documentType);
-		this.setStatus(status);
-	}
-	
 }

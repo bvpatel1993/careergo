@@ -14,14 +14,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "counsellor_applicant_forum")
-public class CounsellorForum implements Serializable {
+@Table(name = "job_application_review")
+public class JobsApplied implements Serializable{
 
 	private Long id;
+	private JobPosts job;
 	private Registration register;
-	private String counsellorMessage;
+	private String companyResponse;
 	private Boolean status;
-	private ApplicantForum forum;
 	private Date date;
 	
 	@Id
@@ -35,7 +35,16 @@ public class CounsellorForum implements Serializable {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "counsellor_registeration_id")
+	@JoinColumn(name = "job_id")
+	public JobPosts getJob() {
+		return job;
+	}
+	public void setJob(JobPosts job) {
+		this.job = job;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "applicant_registeration_id")
 	public Registration getRegister() {
 		return register;
 	}
@@ -43,29 +52,12 @@ public class CounsellorForum implements Serializable {
 		this.register = register;
 	}
 	
-	@Column(name = "counsellor_response")
-	public String getCounsellorMessage() {
-		return counsellorMessage;
+	@Column(name = "company_response")
+	public String getCompanyResponse() {
+		return companyResponse;
 	}
-	public void setCounsellorMessage(String counsellorMessage) {
-		this.counsellorMessage = counsellorMessage;
-	}
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "chat_id")
-	public ApplicantForum getForum() {
-		return forum;
-	}
-	public void setForum(ApplicantForum forum) {
-		this.forum = forum;
-	}
-	
-	@Column(name = "date")
-	public Date getDate() {
-		return date;
-	}
-	public void setDate(Date date) {
-		this.date = date;
+	public void setCompanyResponse(String companyResponse) {
+		this.companyResponse = companyResponse;
 	}
 	
 	@Column(name = "status")
@@ -75,5 +67,14 @@ public class CounsellorForum implements Serializable {
 	public void setStatus(Boolean status) {
 		this.status = status;
 	}
+	
+	@Column(name = "applied_date")
+	public Date getDate() {
+		return date;
+	}
+	public void setDate(Date date) {
+		this.date = date;
+	}
+	
 	
 }

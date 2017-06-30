@@ -27,6 +27,7 @@ public class Registration implements java.io.Serializable {
 	private Roles role;
 	private Boolean verified;
 	private Date date;
+	private Long hits;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -125,6 +126,14 @@ public class Registration implements java.io.Serializable {
 	}
 	public void setDate(Date date) {
 		this.date = date;
+	}
+	
+	@Column(name = "hits")
+	public Long getHits() {
+		return hits;
+	}
+	public void setHits(Long hits) {
+		this.hits = hits;
 	}
 
 }

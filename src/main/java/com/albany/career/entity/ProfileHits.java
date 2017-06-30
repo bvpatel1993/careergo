@@ -4,17 +4,21 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "applicant_documents_type")
-public class DocumentType implements Serializable {
+@Table(name = "applicant_profile_hits")
+public class ProfileHits implements Serializable{
 
 	private Long id;
-	private String documentType;
+	private Registration register;
+	private Long hits;
 	private Boolean status;
 	
 	@Id
@@ -27,12 +31,21 @@ public class DocumentType implements Serializable {
 		this.id = id;
 	}
 	
-	@Column(name = "document_type")
-	public String getDocumentType() {
-		return documentType;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "applicant_id")
+	public Registration getRegister() {
+		return register;
 	}
-	public void setDocumentType(String documentType) {
-		this.documentType = documentType;
+	public void setRegister(Registration register) {
+		this.register = register;
+	}
+	
+	@Column(name = "hits")
+	public Long getHits() {
+		return hits;
+	}
+	public void setHits(Long hits) {
+		this.hits = hits;
 	}
 	
 	@Column(name = "status")
@@ -42,20 +55,4 @@ public class DocumentType implements Serializable {
 	public void setStatus(Boolean status) {
 		this.status = status;
 	}
-	
-	public DocumentType(){
-		
-	}
-	
-	public DocumentType(Long id,String documentType){
-		this.setId(id);
-		this.setDocumentType(documentType);
-	}
-	
-	public DocumentType(Long id,String documentType,Boolean status){
-		this.setId(id);
-		this.setDocumentType(documentType);
-		this.setStatus(status);
-	}
-	
 }
