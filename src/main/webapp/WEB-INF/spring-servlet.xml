@@ -92,6 +92,11 @@
 				<value>com.albany.career.entity.ApplicantGrade</value>
 				<value>com.albany.career.entity.CounsellorDescription</value>
 				<value>com.albany.career.entity.CompanyDescription</value>
+				<value>com.albany.career.entity.JobType</value>
+				<value>com.albany.career.entity.JobPosts</value>
+				<value>com.albany.career.entity.JobsApplied</value>
+				<value>com.albany.career.entity.ProfileHits</value>
+				<value>com.albany.career.entity.Rating</value>
 			</list>
 		</property>
 	</bean>
