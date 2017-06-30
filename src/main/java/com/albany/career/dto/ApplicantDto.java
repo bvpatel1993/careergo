@@ -66,7 +66,19 @@ public class ApplicantDto implements Serializable {
 	private String response;
 	private String marks;
 	
+	private Long jobId;
+	private Long jobPostId;
+	private String companyResponse;
 	
+	
+	public ApplicantDto(Long jobId,Long jobPostId,Long registerId,String companyResponse,Boolean status,Date dDate){
+		this.setJobId(jobId);
+		this.setJobPostId(jobPostId);
+		this.setRegisterId(registerId);
+		this.setCompanyResponse(companyResponse);
+		this.setStatus(status);
+		this.setdDate(dDate);
+	}
 
 	public ApplicantDto(){
 	}
@@ -156,6 +168,30 @@ public class ApplicantDto implements Serializable {
 		this.setdDate(dDate);
 		this.setStatus(status);
 		this.setRegisterId(registerId);
+	}
+	
+	public Long getJobId() {
+		return jobId;
+	}
+
+	public void setJobId(Long jobId) {
+		this.jobId = jobId;
+	}
+
+	public Long getJobPostId() {
+		return jobPostId;
+	}
+
+	public void setJobPostId(Long jobPostId) {
+		this.jobPostId = jobPostId;
+	}
+
+	public String getCompanyResponse() {
+		return companyResponse;
+	}
+
+	public void setCompanyResponse(String companyResponse) {
+		this.companyResponse = companyResponse;
 	}
 	
 	public String getMessage() {

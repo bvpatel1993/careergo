@@ -34,6 +34,8 @@ public class KeyValueDto implements Serializable {
 	private Long testId;
 	private String marks;
 	private String url;
+	private Long hits;
+	private Integer stars;
 
 	public KeyValueDto(){
 	}
@@ -105,6 +107,20 @@ public class KeyValueDto implements Serializable {
 		this.setfName(fName);
 		this.setlName(lName);
 		this.setDate(date);
+	}
+	
+	public KeyValueDto(Long id,String fName,String lName,String email,String phone,String location,String gender,Boolean verified,Date date,Long roleId,Long hits){
+		this.setId(id);
+		this.setfName(fName);
+		this.setlName(lName);
+		this.setEmail(email);
+		this.setLocation(location);
+		this.setPhone(phone);
+		this.setGender(gender);
+		this.setVerified(verified);
+		this.setDate(date);
+		this.setRoleId(roleId);
+		this.setHits(hits);
 	}
 	
 	public Boolean getStatus() {
@@ -309,6 +325,22 @@ public class KeyValueDto implements Serializable {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public Long getHits() {
+		return hits;
+	}
+
+	public void setHits(Long hits) {
+		this.hits = hits;
+	}
+
+	public Integer getStars() {
+		return stars;
+	}
+
+	public void setStars(Integer stars) {
+		this.stars = stars;
 	}
 	
 
