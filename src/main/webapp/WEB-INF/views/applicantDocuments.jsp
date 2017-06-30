@@ -60,14 +60,31 @@ function deleteFile(docId){
 						<!-- User Account: style can be found in dropdown.less -->
 						<li class="dropdown user user-menu">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<img src="<c:url value='/resources/bootstrap/images/male.png' />" class="user-image" alt="User Image">
+							<%-- <img src="<c:url value='/resources/bootstrap/images/male.png' />" class="user-image" alt="User Image"> --%>
+							<c:if test="${docs.id > 0}">
+							<img src="getProfilePhoto?id=${register.id}" class="user-image"
+								alt="User Image">
+						</c:if> <c:if test="${docs.id == null}">
+							<img
+								src="<c:url value='/resources/bootstrap/images/dummy.png' />"
+								class="user-image" alt="User Image">
+						</c:if>
 							<span class="hidden-xs">Settings <i class="fa fa-gears"></i></span>
 						</a>
 						<ul class="dropdown-menu">
 							<!-- User image -->
 							<li class="user-header">
-								<img src="<c:url value='/resources/bootstrap/images/male.png' />" class="img-circle" alt="User Image">
-								<p>${register.fullname}<small>Member since ${register.sDate}</small></p>
+								<%-- <img src="<c:url value='/resources/bootstrap/images/male.png' />" class="img-circle" alt="User Image"> --%>
+								<c:if test="${docs.id > 0}">
+							<img src="getProfilePhoto?id=${register.id}" class="img-circle"
+								alt="User Image">
+						</c:if> <c:if test="${docs.id == null}">
+							<img
+								src="<c:url value='/resources/bootstrap/images/dummy.png' />"
+								class="img-circle" alt="User Image">
+						</c:if>
+								<p>${register.fullname}<small>Member since ${register.sDate}</small>
+								<small><b>${register.hits}</b> companies viewed your profile</small></p>
 							</li>
 							<!-- Menu Footer-->
 							<li class="user-footer">
@@ -90,7 +107,16 @@ function deleteFile(docId){
 				<section class="sidebar">
 		          <!-- Sidebar user panel -->
 		          <div class="user-panel">
-		            <div class="pull-left image"><img src="<c:url value='/resources/bootstrap/images/male.png' />" class="img-circle" alt="User Image"></div>
+		            <div class="pull-left image" style="height: 45px;"><%-- <img src="<c:url value='/resources/bootstrap/images/male.png' />" class="img-circle" alt="User Image"> --%>
+		            <c:if test="${docs.id > 0}">
+							<img src="getProfilePhoto?id=${register.id}" class="img-circle"
+								alt="User Image">
+						</c:if> <c:if test="${docs.id == null}">
+							<img
+								src="<c:url value='/resources/bootstrap/images/dummy.png' />"
+								class="img-circle" alt="User Image">
+						</c:if>
+		            </div>
 		            <div class="pull-left info"><p>${register.fullname}</p><a href="applicantProfile"><i class="fa fa-circle text-success"></i> ${register.vStatus}</a></div>
 		          </div>
 				<ul class="sidebar-menu">
@@ -105,14 +131,14 @@ function deleteFile(docId){
 					<li><a href="applicantForum?id=${register.id}&roleId=${register.roleId}"><span>Chat Forum</span></a></li>
 					<li class="treeview"><a href="#"><span>Jobs</span> <i class="fa fa-angle-left pull-right"></i></a>
 						<ul class="treeview-menu">
-							<li class="active"><a href="#"><i class="fa fa-circle-o"></i> Jobs Available</a></li>
-							<li><a href="#"><i class="fa fa-circle-o"></i> Jobs Applied</a></li>
-							<li><a href="#"><i class="fa fa-circle-o"></i> Company Review</a></li>
+							<li><a href="applicantJobLists?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Jobs Available</a></li>
+							<li><a href="applicantJobApplied?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Jobs Applied</a></li>
+							<li><a href="applicantReview?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Company Review</a></li>
 						</ul>
 					</li>
 					<li class="treeview"><a href="#"><span>Test</span> <i class="fa fa-angle-left pull-right"></i></a>
 						<ul class="treeview-menu">
-							<li class="active"><a href="applicantTest?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Tests Available</a></li>
+							<li><a href="applicantTest?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Tests Available</a></li>
 							<li><a href="applicantTestGrade?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Tests Completed</a></li>
 						</ul>
 					</li>

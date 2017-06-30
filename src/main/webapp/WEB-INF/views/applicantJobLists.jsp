@@ -1,52 +1,29 @@
 <%@include file="include.jsp"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    	<title>Career Go | Applicant-Test Grade Details</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Career Go | Applicant-Jobs Available Details</title>
 </head>
-
 <script type="text/javascript">
 
-function takeTest(testId,registerId,roleId){
-	$.post("takeTest",{testId : testId,registerId : registerId, roleId :roleId},function(data) 
+function applyJob(jobId,applicantId){
+	//alert(jobId);
+	$.post("applyJobs",{jobId : jobId,applicantId : applicantId},function(data) 
 	{
-		if(data.flag){
+		if(data){
 			toastr.success(data.message);
-			window.open("viewTestFile?testId="+testId);
-			//window.location.reload(true);
+			window.location.reload(true);
 		}
 		else{
-			toastr.warning("Failed To Download Test Files");
+			toastr.warning(data.message);
 		}
 	});
 }
-
-function uploadFiles(testId,registerId){
-	$("#testId").val(testId);
-	$("#uploadModal").modal();
-}
-
-function saveFiles(){
-	$.ajax({
-        type: "POST", 
-        url: "uploadAnswer",
-        data: $("#testData").serialize(), 
-        dataType: "json",
-        success: function(data) 
-        {
-        	if(data.flag){
-        		toastr.success(data.message);
-        		location.reload();
-        	}else{
-        		toastr.warning(data.message);
-        	}
-        }          
-   });
-}
 </script>
-
-  <body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">
 
       			<header class="main-header">
@@ -103,8 +80,6 @@ function saveFiles(){
 					</div>
 				</nav>
 			</header>
-      <!-- Left side column. contains the logo and sidebar -->
-			<!-- Left side column. contains the logo and sidebar -->
 			
 			<!-- Left side column. contains the logo and sidebar -->
 			<aside class="main-sidebar">
@@ -134,17 +109,17 @@ function saveFiles(){
 					<li><a href="applicantWork?id=${register.id}&roleId=${register.roleId}"><span>Experience</span></a></li>
 					<li><a href="applicantDocument?id=${register.id}&roleId=${register.roleId}"><span>Documents</span></a></li>
 					<li><a href="applicantForum?id=${register.id}&roleId=${register.roleId}"><span>Chat Forum</span></a></li>
-					<li class="treeview"><a href="#"><span>Jobs</span> <i class="fa fa-angle-left pull-right"></i></a>
+					<li class="treeview active"><a href="#"><span>Jobs</span> <i class="fa fa-angle-left pull-right"></i></a>
 						<ul class="treeview-menu">
-							<li><a href="applicantJobLists?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Jobs Available</a></li>
+							<li class="active"><a href="applicantJobLists?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Jobs Available</a></li>
 							<li><a href="applicantJobApplied?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Jobs Applied</a></li>
 							<li><a href="applicantReview?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Company Review</a></li>
 						</ul>
 					</li>
-					<li class="treeview active"><a href="#"><span>Test</span> <i class="fa fa-angle-left pull-right"></i></a>
+					<li class="treeview"><a href="#"><span>Test</span> <i class="fa fa-angle-left pull-right"></i></a>
 						<ul class="treeview-menu">
 							<li><a href="applicantTest?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Tests Available</a></li>
-							<li class="active"><a href="applicantTestGrade?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Tests Completed</a></li>
+							<li><a href="applicantTestGrade?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Tests Completed</a></li>
 						</ul>
 					</li>
 				</ul>
@@ -155,45 +130,58 @@ function saveFiles(){
 	<!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
         <!-- Content Header (Page header) -->
-        <section class="content-header"><h1>Test Details</h1></section>
+        <section class="content-header"><h1>Jobs Available Details</h1></section>
         <!-- Main content -->
         <section class="content">
           <div class="row">
             <!-- left column -->
             <div class="col-md-12">
               <!-- general form elements -->
-              <div class="box box-danger">
+              <div class="box box-info">
                 <div class="box-header with-border">
                   <h3 class="box-title">Details</h3>
                 </div><!-- /.box-header -->
-               <div>
-               	<table id="tests" class="table table dataTable"><!--  table table-bordered table-hover dataTable -->
+                <!-- form start -->
+                <div class="box-body" id="jobListTable" style="display:block;">
+                  <table id="job" class="table table dataTable"><!--  table table-bordered table-hover dataTable -->
                     <thead class="no-sort">
                       <tr>
-                      	<th style="display:none;">id</th>
-                        <th>Test</th>
-                        <th>Date</th>
-                        <th>Marks</th>
-                        <th></th>
+                      	<th style="display:none;width:1%;">jobId</th>
+                        <th style="width:5%;">Company</th>
+                        <th style="width:5%;">Title</th>
+                        <th style="width:20%;">Description</th>
+                        <th style="width:5%;">Location</th>
+                        <th style="width:5%;">Salary</th>
+                        <th style="width:5%;">Phone</th>
+                        <th style="width:5%;">Email</th>
+                        <th style="width:5%;">JobType</th>
+                        <th style="width:5%;">Posted On</th>
+                        <th style="width:5%;"></th>
                       </tr>
                     </thead>
-                    <tbody id="testDetails">
-                      <c:forEach items="${testList}" var="testList">
+                    <tbody id="jobDetails">
+                      <c:forEach items="${jobList}" var="jobList">
+                      <c:if test="${jobList.bStatus == false}">
                       	<tr>
-                      		<td style="display:none;">${testList.id}</td>
-							<td>${testList.testname}</td>
-							<td>${testList.sDate}</td>
-							<td>${testList.marks}</td>
-							<c:if test="${testList.verified == false}">
-						    <td style="cursor: pointer;">
-						    	<span title="click to Upload" onclick="uploadFiles(${testList.id});" class="label label-info">Upload</span>
-						    </td>
-						    </c:if>
+                      		<td style="display:none;width:1%;">${jobList.jobId}</td>
+							<td style="width:5%;">${jobList.companyname}</td>
+							<td style="width:5%;">${jobList.title}</td>
+							<td style="width:20%;">${jobList.description}</td>
+							<td style="width:5%;">${jobList.address}</td>
+							<td style="width:5%;">${jobList.salary}</td>
+							<td style="width:5%;">${jobList.phone}</td>
+							<td style="width:5%;">${jobList.email}</td>
+							<td style="width:5%;">${jobList.jobType}</td>
+							<td style="width:5%;">${jobList.sDate}</td>
+							<td style="width:5%;">
+								<span style="cursor: pointer;" onclick="applyJob(${jobList.jobId},${register.id});" class="label label-success">Apply</span>
+							</td>
                       	</tr>
+                      </c:if>
                       </c:forEach>
                     </tbody>
                   </table>
-               </div>
+                </div><!-- /.box-body -->
               </div><!-- /.box -->
 		      <div >
 		      </div>
@@ -213,7 +201,7 @@ function saveFiles(){
 <script type="text/javascript">
 
 $(function () {
-    $('#education').dataTable({
+    $('#job').dataTable({
       "paging": true,
       "lengthChange": false,
       "searching": false,
@@ -233,7 +221,7 @@ $(function () {
          <div class="modal-content">
          	<form class="form">
            <div class="modal-header">
-             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">�</span></button>
              <h4 class="modal-title">Reset Password</h4>
            </div>
            <div class="modal-body">
@@ -251,35 +239,6 @@ $(function () {
              <button type="button" class="btn btn-danger " data-dismiss="modal">Cancel</button>
            </div>
            </form>
-         </div><!-- /.modal-content -->
-       </div><!-- /.modal-dialog -->
-    </div>
-    
-    <div id="uploadModal" class="modal modal-success">
-       <div class="modal-dialog">
-         <div class="modal-content">
-         	<form:form action="upload" method="post" commandName="testData">
-           <div class="modal-header">
-             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-             <h4 class="modal-title">Upload</h4>
-           </div>
-           <div class="modal-body">
-			<div class="form-group">
-				<div>
-                    <form:input type="hidden" class="form-control" path="registerId" value="${register.id}"/>
-                    <form:input type="hidden" class="form-control" path="roleId" value="${register.roleId}"/>
-                    <form:input type="hidden" class="form-control" id="testId" path="id" value=""/>
-                    <form:input type="hidden" class="form-control" path="marks" value="Not-Graded"/>
-                    <label>URL</label>
-                    <form:textarea class="form-control" path="url" placeholder="Type URL of file..."/>
-                 </div>
-			</div>
-			</div>
-           <div class="modal-footer">
-           	<button style="margin-left: 10%;" class="btn btn-default" type="button" onclick="saveFiles()">Send</button>
-             <button type="button" class="btn btn-danger " data-dismiss="modal">Cancel</button>
-           </div>
-           </form:form>
          </div><!-- /.modal-content -->
        </div><!-- /.modal-dialog -->
     </div>

@@ -37,14 +37,29 @@ function hidingDetails(value){
 						<!-- User Account: style can be found in dropdown.less -->
 						<li class="dropdown user user-menu">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<img src="<c:url value='/resources/bootstrap/images/male.png' />" class="user-image" alt="User Image">
-							<span class="hidden-xs">Settings <i class="fa fa-gears"></i></span>
+							<%-- <img src="<c:url value='/resources/bootstrap/images/male.png' />" class="user-image" alt="User Image"> --%>
+							<c:if test="${counsellor.id > 0}">
+							<img src="getImage?id=${counsellor.id}" class="user-image"
+								alt="User Image">
+						</c:if> <c:if test="${counsellor.id == null}">
+							<img
+								src="<c:url value='/resources/bootstrap/images/dummy.png' />"
+								class="user-image" alt="User Image">
+						</c:if> <span class="hidden-xs">Settings <i class="fa fa-gears"></i></span>
 						</a>
 						<ul class="dropdown-menu">
 							<!-- User image -->
 							<li class="user-header">
-								<img src="<c:url value='/resources/bootstrap/images/male.png' />" class="img-circle" alt="User Image">
-								<p>${register.fullname}<small>Member since ${register.sDate}</small></p>
+								<%-- <img src="<c:url value='/resources/bootstrap/images/male.png' />" class="img-circle" alt="User Image"> --%>
+								<c:if test="${counsellor.id > 0}">
+								<img src="getImage?id=${counsellor.id}" class="img-circle"
+									alt="User Image">
+							</c:if> <c:if test="${counsellor.id == null}">
+								<img
+									src="<c:url value='/resources/bootstrap/images/dummy.png' />"
+									class="img-circle" alt="User Image">
+							</c:if>
+							<p>${register.fullname}<small>Member since ${register.sDate}</small></p>
 							</li>
 							<!-- Menu Footer-->
 							<li class="user-footer">
@@ -68,11 +83,13 @@ function hidingDetails(value){
 		          <!-- Sidebar user panel -->
 		          <div class="user-panel">
 		            <div class="pull-left image" style="height: 45px;">
-		           	 <%-- <c:if test="${counsellor.id > 0}">
+		           	 <c:if test="${counsellor.id > 0}">
 		           	 	<img src="getImage?id=${counsellor.id}" class="img-circle" alt="User Image">
-		           	 </c:if> --%>
-		           	 <img src="<c:url value='/resources/bootstrap/images/female.png' />" class="img-circle" alt="User Image">
-		            </div><!-- <c:url value='/resources/bootstrap/images/male.png' />  -->
+		           	 </c:if>
+		           	 <c:if test="${counsellor.id == null}">
+		           	 	<img src="<c:url value='/resources/bootstrap/images/dummy.png' />" class="img-circle" alt="User Image">
+		           	 </c:if>
+		            </div>
 		            <div class="pull-left info"><p>${register.fullname}</p><a href="#"><i class="fa fa-circle text-success"></i> ${register.vStatus}</a></div>
 		          </div>
 				<ul class="sidebar-menu">

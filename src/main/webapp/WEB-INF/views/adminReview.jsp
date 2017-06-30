@@ -4,29 +4,22 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title>Career Go | Admin-Test Grade Details</title>
+	<title>Career Go | Admin-Review Details</title>
 </head>
 
 <script type="text/javascript">
 
-function saveGradeTest(){
-	var testId = $("#testId").val();
-	var marks = $("#marks").val();
-	$.post("GradeTest",{testId : testId,marks : marks},function(data) 
+function deleteReport(reviewId){
+	$.post("deleteAbusiveRating",{reviewId : reviewId},function(data) 
 	{
 		if(data){
-			toastr.success("Grades Updated Successfully");
-			window.location.reload(true);
+			toastr.error("Rating Deleted Successfully");
+			location.reload();
 		}
 		else{
-			toastr.warning("Failed To Updated Grades");
+			toastr.warning("Failed To Delete");
 		}
 	});
-}
-
-function GradeTest(testId){
-	$("#testId").val(testId);
-	$("#gradeModal").modal();
 }
 
 </script>
@@ -122,18 +115,18 @@ function GradeTest(testId){
                 <span>Counselor</span>
               </a>
             </li>
-             <li class="treeview">
+            <li class="active treeview">
               <a href="adminReview?id=${register.id}&roleId=${register.roleId}">
                 <span>Company Review</span>
               </a>
             </li>
-            <li class="treeview active"><a href="#"><span>Test</span> <i class="fa fa-angle-left pull-right"></i></a>
+            <li class="treeview"><a href="#"><span>Test</span> <i class="fa fa-angle-left pull-right"></i></a>
 				<ul class="treeview-menu">
 					<li><a href="adminTest?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Tests</a></li>
-					<li class="active"><a href="adminTestGrade?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Grade</a></li>
+					<li><a href="adminTestGrade?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Grade</a></li>
 				</ul>
 			</li>
-			</ul>
+          </ul>
         </section>
         <!-- /.sidebar -->
       </aside>
@@ -141,7 +134,7 @@ function GradeTest(testId){
       <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
         <!-- Content Header (Page header) -->
-        <section class="content-header"><h1>Test Grading Details</h1></section>
+        <section class="content-header"><h1>Abusive Rating Details</h1></section>
         <!-- Main content -->
         <section class="content">
           <div class="row">
@@ -153,43 +146,48 @@ function GradeTest(testId){
                   <h3 class="box-title">Details</h3>
                 </div><!-- /.box-header -->
                 <!-- form start -->
-                <div class="box-body" id="showExam" style="display: block;">
-                  <table id="tests" class="table table dataTable"><!--  table table-bordered table-hover dataTable -->
+                <div class="box-body" id="JobUDetails" style="display: block;">
+                  <table id="abusive" class="table table dataTable"><!--  table table-bordered table-hover dataTable -->
                     <thead class="no-sort">
                       <tr>
-                      	<th style="display:none;">TestInfoId</th>
-                      	<th style="display:none;">RegistrationId</th>
-                      	<th style="display:none;">TestId</th>
-                        <th>Applicant</th>
-                        <th>TestName</th>
-                        <th>Submitted Date</th>
-                        <th>Marks</th>
+                      	<th style="display:none;width:1%;">reviewId</th>
+                        <th style="width:10%;">Reporting Company</th>
+                        <th style="width:10%;">Applicant</th>
+                        <th style="width:10%;">Comments</th>
+                        <th style="width:10%;">Rate</th>
+                        <th style="width:10%;"></th>
                       </tr>
                     </thead>
-                    <tbody id="testDetails">
-                      <c:forEach items="${testList}" var="testList">
+                    <tbody id="reviewDetails">
+                      <c:forEach items="${reviewList}" var="reviewList">
                       	<tr>
-                      		<td style="display:none;">${testList.id}</td>
-                      		<td style="display:none;">${testList.registerId}</td>
-                      		<td style="display:none;">${testList.testId}</td>
-							<td>${testList.fullname}</td>
-							<td>${testList.testname}</td>
-							<td>${testList.sDate}</td>
-							<td>${testList.marks}</td>
-						    <td style="cursor: pointer;">
-						    	<a href="${testList.url}" target="_blank"><span title="click to View" class="label label-info">View</span></a>
-						    	<span title="click to Grade" onclick="GradeTest(${testList.id});" class="label label-success">Grade</span>
-						    </td>
-						    <%-- <c:if test="${testList.verified == true}">
-						    <td style="cursor: pointer;">
-						    	<span title="click to View" onclick="viewTest(${testList.id});" class="label label-info">View</span>
-						    </td>
-						    </c:if> --%>
+                      		<td style="display:none;width:1%;">${reviewList.rateId}</td>
+							<td style="width:10%;">${reviewList.companyResponse}</td>
+							<td style="width:10%;">${reviewList.title}</td>
+							<td style="width:10%;">${reviewList.comments}</td>
+							<c:if test="${reviewList.stars == 1}">
+								<td style="width:10%;"><img style="height: 20px;" src="<c:url value='/resources/bootstrap/images/one.PNG' />" class="user-image" alt="1/5"></td>
+							</c:if>
+							<c:if test="${reviewList.stars == 2}">
+								<td style="width:10%;"><img style="height: 20px;" src="<c:url value='/resources/bootstrap/images/two.PNG' />" class="user-image" alt="2/5"></td>
+							</c:if>
+							<c:if test="${reviewList.stars == 3}">
+								<td style="width:10%;"><img style="height: 20px;" src="<c:url value='/resources/bootstrap/images/three.PNG' />" class="user-image" alt="3/5"></td>
+							</c:if>
+							<c:if test="${reviewList.stars == 4}">
+								<td style="width:10%;"><img style="height: 20px;" src="<c:url value='/resources/bootstrap/images/four.PNG' />" class="user-image" alt="4/5"></td>
+							</c:if>
+							<c:if test="${reviewList.stars == 5}">
+								<td style="width:10%;"><img style="height: 20px;" src="<c:url value='/resources/bootstrap/images/five.PNG' />" class="user-image" alt="5/5"></td>
+							</c:if>
+							<td style="width:10%;">
+								<span style="cursor: pointer;" onclick="deleteReport(${reviewList.rateId});" class="label label-danger">Delete Rating</span>
+							</td>
                       	</tr>
                       </c:forEach>
                     </tbody>
                   </table>
-                </div><!-- /.box-body -->
+                </div>
               </div><!-- /.box -->
 		      <div >
 		      </div>
@@ -209,7 +207,7 @@ function GradeTest(testId){
 <script type="text/javascript">
 
 $(function () {
-    $('#tests').dataTable({
+    $('#abusive').dataTable({
       "paging": true,
       "lengthChange": false,
       "searching": false,
@@ -245,30 +243,6 @@ $(function () {
              <button type="button" class="btn btn-danger " data-dismiss="modal">Cancel</button>
            </div>
            </form>
-         </div><!-- /.modal-content -->
-       </div><!-- /.modal-dialog -->
-    </div>
-    
-    <div id="gradeModal" class="modal modal-success">
-       <div class="modal-dialog">
-         <div class="modal-content">
-           <div class="modal-header">
-             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-             <h4 class="modal-title">Grade</h4>
-           </div>
-           <div class="modal-body">
-			<div class="form-group">
-				<div>
-					<input type="hidden" id="testId" />
-                    <label>Marks [out of 100]</label>
-                    <textarea class="form-control" id="marks" placeholder="Marks"></textarea>
-                 </div>
-			</div>
-			</div>
-           <div class="modal-footer">
-           	<button style="margin-left: 10%;" class="btn btn-default" type="button" onclick="saveGradeTest()">Send</button>
-             <button type="button" class="btn btn-danger " data-dismiss="modal">Cancel</button>
-           </div>
          </div><!-- /.modal-content -->
        </div><!-- /.modal-dialog -->
     </div>

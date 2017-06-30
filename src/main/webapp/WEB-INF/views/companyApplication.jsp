@@ -3,21 +3,47 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title>Career Go | Company-Description</title>
+	<title>Career Go | Company-Job Application Received Details</title>
 </head>
 <script type="text/javascript">
-function hidingDetails(value){
-	if(value == 1){
-		document.getElementById('companyeditableDescription').style.display = "none";
-		document.getElementById('companyUneditableDescription').style.display = "block";
-	}else{
-		document.getElementById('companyeditableDescription').style.display = "block";
-		document.getElementById('companyUneditableDescription').style.display = "none";
-		var id = $("#companyId").val();var des = $("#dDescription").val();
-		$("#coId").val(id);$("#cDescription").val(des);
-		
-	}
+
+
+function viewApplicant(applicantId){
+	//alert(applicantId);
+	$.post("updateProfileHits",{applicantId : applicantId},function(data) 
+	{
+		if(data){
+			toastr.success("Viewing Applicant Profile");
+			window.open("applicantProfileInfo?id="+applicantId+"&roleId="+1);
+		}
+		else{
+			toastr.warning("Profile Not Available");
+		}
+	});
 }
+
+function response(jobId){
+	$("#jobId").val(jobId);
+	$("#response").modal();
+}
+
+function saveResponse(){
+	var jobId = $("#jobId").val();
+	var message = $("#message").val();
+	$.post("respondToJobApplication",{jobId : jobId, message : message},function(data) 
+	{
+		if(data){
+			toastr.success("Message Sent Successfully");
+			window.location.reload(true);
+		}
+		else{
+			toastr.warning("Message Failed");
+		}
+	});
+
+}
+
+
 </script>
 <body class="skin-blue sidebar-mini wysihtml5-supported">
 		<div class="wrapper">
@@ -94,11 +120,11 @@ function hidingDetails(value){
 				<ul class="sidebar-menu">
 					<li class="header">MAIN NAVIGATION</li>
 					<li><a href="companyProfile?id=${register.id}&roleId=${register.roleId}"><span>Profile</span></a></li>
-					<li class="active"><a href="companyDetails?id=${register.id}&roleId=${register.roleId}"><span>Description</span></a></li>
-					<li class="treeview"><a href="#"><span>Jobs</span> <i class="fa fa-angle-left pull-right"></i></a>
+					<li><a href="companyDetails?id=${register.id}&roleId=${register.roleId}"><span>Description</span></a></li>
+					<li class="treeview active"><a href="#"><span>Jobs</span> <i class="fa fa-angle-left pull-right"></i></a>
 						<ul class="treeview-menu">
 							<li><a href="companyJobs?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Job Posting</a></li>
-							<li><a href="companyApplication?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Applications Received</a></li>
+							<li class="active"><a href="companyApplication?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Applications Received</a></li>
 							<li><a href="companyReview?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Reviews</a></li>
 						</ul>
 					</li>
@@ -106,11 +132,11 @@ function hidingDetails(value){
 				</section>
 			<!-- /.sidebar -->
 			</aside>
-			
-	<!-- Content Wrapper. Contains page content -->
+
+			<!-- Content Wrapper. Contains page content -->
 	<div class="content-wrapper">
         <!-- Content Header (Page header) -->
-        <section class="content-header"><h1>Company Description Details</h1></section>
+        <section class="content-header"><h1>Job Application Received</h1></section>
         <!-- Main content -->
         <section class="content">
           <div class="row">
@@ -122,46 +148,41 @@ function hidingDetails(value){
                   <h3 class="box-title">Details</h3>
                 </div><!-- /.box-header -->
                 <!-- form start -->
-                <div class="box-body" id="companyeditableDescription" style="display: none;">
-                 <form:form action="saveCompanyDescription" method="post" enctype="multipart/form-data" commandName="companyDetails" >
-                	<div class="form-group">
-                	  <form:input class="form-control" type="hidden" id="registerId" name="registerId" path="registerId" value="${register.id}" />
-                	  <form:input class="form-control" type="hidden" id="roleId" name="roleId" path="roleId" value="${register.roleId}" />
-                	  <form:input class="form-control" type="hidden" id="coId" name="id" path="id" value="" />
-                	  <label>Website</label>
-                      <form:input type="text" class="form-control" id="cWebsite" path="website" placeholder="Website" value="${company.website}"  />
-                      <label>Domain</label>
-                      <form:input type="text" class="form-control" id="cDomain" path="domain" placeholder="Domain" value="${company.domain}"  />
-                      <label>Description</label>
-                      <form:textarea type="text" class="form-control" id="cDescription" path="description" placeholder="Description" value=""  />
-                      <label>Choose Logo</label>
-                      <form:input type="file" id="logoFile" name="logoFile" path="logoFile" placeholder="" />
-                    </div>
-                     <button id="btnSubmiter" style="float: right;margin-left: 2%;display: block;" type="submit" class="btn btn-success" value="Update" >Update</button>
-	            	 <button style="float: right;" type="button" class="btn btn-danger" onclick="hidingDetails(1)">Cancel</button>
-	             </form:form>
+                <div class="box-body" id="JobUDetails" style="display: block;">
+                  <table id="jobsApplications" class="table table dataTable"><!--  table table-bordered table-hover dataTable -->
+                    <thead class="no-sort">
+                      <tr>
+                      	<th style="display:none;width:1%;">jobId</th>
+                        <th style="width:10%;">Applicant</th>
+                        <th style="width:10%;">Applied On</th>
+                        <th style="width:10%;">Job Title</th>
+                        <th style="width:10%;">Job Location</th>
+                        <th style="width:10%;">Job Type</th>
+                        <th style="width:10%;">Response</th>
+                        <th style="width:10%;"></th>
+                      </tr>
+                    </thead>
+                    <tbody id="jobsDetails">
+                      <c:forEach items="${ApplicationList}" var="jobsList">
+                      	<tr>
+                      		<td style="display:none;width:1%;">${jobsList.jobId}</td>
+							<td style="width:10%;">${jobsList.companyname}</td>
+							<td style="width:10%;">${jobsList.sDate}</td>
+							<td style="width:10%;">${jobsList.title}</td>
+							<td style="width:10%;">${jobsList.address}</td>
+							<td style="width:10%;">${jobsList.jobType}</td>
+							<td style="width:10%;">${jobsList.companyResponse}</td>
+							<td style="width:10%;">
+								<span style="cursor: pointer;" onclick="viewApplicant(${jobsList.registerId});" class="label label-success">View Profile</span>
+								<span style="cursor: pointer;" onclick="response(${jobsList.jobId});" class="label label-info">Reply</span>
+							</td>
+                      	</tr>
+                      </c:forEach>
+                    </tbody>
+                  </table>
                 </div>
 
-                <div class="box-body" id="companyUneditableDescription" style="display: block;">
-                	<form role="form">
-	                  <div class="box-body">
-	                    <div class="form-group">
-	                      <input type="hidden" class="form-control" id="companyRegisterId" placeholder="id" disabled value="${register.id}">
-	                      <input type="hidden" class="form-control" id="companyRoleId" placeholder="id" disabled value="${register.roleId}">
-	                      <input type="hidden" class="form-control" id="companyId" placeholder="id" disabled value="${company.id}">
-	                      <label>Website</label>
-	                      <input type="text" class="form-control" id="cWebsite" placeholder="Website" value="${company.website}" disabled>
-	                      <label>Domain</label>
-	                      <input type="text" class="form-control" id="dDomain" placeholder="Domain" value="${company.domain}" disabled />
-	                      <label>Description</label>
-	                      <textarea type="text" class="form-control" id="dDescription" placeholder="Description" disabled>${company.description}</textarea>
-	                    </div>
-	                  </div><!-- /.box-body -->
-	                  <div class="box-footer">
-	                    <button style="float: right;" type="button" class="btn btn-info" onclick="hidingDetails(2)">Edit</button>
-	                  </div>
-	                </form>
-                </div><!-- /.box-body -->
+                
               </div><!-- /.box -->
 		      <div >
 		      </div>
@@ -178,6 +199,21 @@ function hidingDetails(value){
    </footer>
 
  </div><!-- ./wrapper -->
+ 
+ <script type="text/javascript">
+
+$(function () {
+    $('#jobsApplications').dataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false
+    });
+  });
+
+</script>
  
  <!-- Modals  -->
 	<div id="ResetPasswordModal" class="modal">
@@ -203,6 +239,30 @@ function hidingDetails(value){
              <button type="button" class="btn btn-danger " data-dismiss="modal">Cancel</button>
            </div>
            </form>
+         </div><!-- /.modal-content -->
+       </div><!-- /.modal-dialog -->
+    </div>
+    
+    <div id="response" class="modal modal-success">
+       <div class="modal-dialog">
+         <div class="modal-content">
+           <div class="modal-header">
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+             <h4 class="modal-title">Job Status Acknowledgment</h4>
+           </div>
+           <div class="modal-body">
+			<div class="form-group">
+				<div>
+					<input type="hidden" id="jobId" />
+                    <label>Message</label>
+                    <textarea class="form-control" id="message" placeholder="Message"></textarea>
+                 </div>
+			</div>
+			</div>
+           <div class="modal-footer">
+           	<button style="margin-left: 10%;" class="btn btn-default" type="button" onclick="saveResponse()">Send</button>
+             <button type="button" class="btn btn-danger " data-dismiss="modal">Cancel</button>
+           </div>
          </div><!-- /.modal-content -->
        </div><!-- /.modal-dialog -->
     </div>

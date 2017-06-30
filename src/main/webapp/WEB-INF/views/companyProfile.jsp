@@ -54,13 +54,29 @@ function updatingcompanyDetails(){
 						<!-- User Account: style can be found in dropdown.less -->
 						<li class="dropdown user user-menu">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<img src="<c:url value='/resources/bootstrap/images/male.png' />" class="user-image" alt="User Image">
+							<%-- <img src="<c:url value='/resources/bootstrap/images/male.png' />" class="user-image" alt="User Image"> --%>
+							<c:if test="${company.id > 0}">
+							<img src="getCompanyImage?id=${company.id}" class="user-image"
+								alt="User Image">
+						</c:if> <c:if test="${company.id == null}">
+							<img
+								src="<c:url value='/resources/bootstrap/images/dummy.png' />"
+								class="user-image" alt="User Image">
+						</c:if>
 							<span class="hidden-xs">Settings <i class="fa fa-gears"></i></span>
 						</a>
 						<ul class="dropdown-menu">
 							<!-- User image -->
 							<li class="user-header">
-								<img src="<c:url value='/resources/bootstrap/images/male.png' />" class="img-circle" alt="User Image">
+								<%-- <img src="<c:url value='/resources/bootstrap/images/male.png' />" class="img-circle" alt="User Image"> --%>
+								<c:if test="${company.id > 0}">
+								<img src="getCompanyImage?id=${company.id}" class="img-circle"
+									alt="User Image">
+							</c:if> <c:if test="${company.id == null}">
+								<img
+									src="<c:url value='/resources/bootstrap/images/dummy.png' />"
+									class="img-circle" alt="User Image">
+							</c:if>
 								<p>${register.lName}<small>Member since ${register.sDate}</small></p>
 							</li>
 							<!-- Menu Footer-->
@@ -83,7 +99,14 @@ function updatingcompanyDetails(){
 				<section class="sidebar">
 		          <!-- Sidebar user panel -->
 		          <div class="user-panel">
-		            <div class="pull-left image"><img src="<c:url value='/resources/bootstrap/images/male.png' />" class="img-circle" alt="User Image"></div>
+		            <div class="pull-left image" style="height: 45px;"><%-- <img src="<c:url value='/resources/bootstrap/images/male.png' />" class="img-circle" alt="User Image"> --%>
+		            	<c:if test="${company.id > 0}">
+		           	 	<img src="getCompanyImage?id=${company.id}" class="img-circle" alt="User Image">
+		           	 </c:if>
+		           	 <c:if test="${company.id == null}">
+		           	 	<img src="<c:url value='/resources/bootstrap/images/dummy.png' />" class="img-circle" alt="User Image">
+		           	 </c:if>
+		            </div>
 		            <div class="pull-left info"><p>${register.lName}</p><a href="applicantProfile"><i class="fa fa-circle text-success"></i> ${register.vStatus}</a></div>
 		          </div>
 				<ul class="sidebar-menu">
@@ -93,8 +116,8 @@ function updatingcompanyDetails(){
 					<li class="treeview"><a href="#"><span>Jobs</span> <i class="fa fa-angle-left pull-right"></i></a>
 						<ul class="treeview-menu">
 							<li><a href="companyJobs?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Job Posting</a></li>
-							<li><a href="#"><i class="fa fa-circle-o"></i> Applications Received</a></li>
-							<li><a href="#"><i class="fa fa-circle-o"></i> Reviews</a></li>
+							<li><a href="companyApplication?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Applications Received</a></li>
+							<li><a href="companyReview?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Reviews</a></li>
 						</ul>
 					</li>
 				</ul>

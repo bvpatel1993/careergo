@@ -3,21 +3,25 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title>Career Go | Company-Description</title>
+	<title>Career Go | Company-Rating Details</title>
 </head>
 <script type="text/javascript">
-function hidingDetails(value){
-	if(value == 1){
-		document.getElementById('companyeditableDescription').style.display = "none";
-		document.getElementById('companyUneditableDescription').style.display = "block";
-	}else{
-		document.getElementById('companyeditableDescription').style.display = "block";
-		document.getElementById('companyUneditableDescription').style.display = "none";
-		var id = $("#companyId").val();var des = $("#dDescription").val();
-		$("#coId").val(id);$("#cDescription").val(des);
-		
-	}
+
+
+
+function report(reviewId){
+	$.post("reportReviews",{reviewId : reviewId},function(data) 
+	{
+		if(data){
+			toastr.error("Reported to Career Go Professionals");
+			//window.location.reload(true);
+		}
+		else{
+			toastr.warning("Failed To Report");
+		}
+	});
 }
+
 </script>
 <body class="skin-blue sidebar-mini wysihtml5-supported">
 		<div class="wrapper">
@@ -94,74 +98,93 @@ function hidingDetails(value){
 				<ul class="sidebar-menu">
 					<li class="header">MAIN NAVIGATION</li>
 					<li><a href="companyProfile?id=${register.id}&roleId=${register.roleId}"><span>Profile</span></a></li>
-					<li class="active"><a href="companyDetails?id=${register.id}&roleId=${register.roleId}"><span>Description</span></a></li>
-					<li class="treeview"><a href="#"><span>Jobs</span> <i class="fa fa-angle-left pull-right"></i></a>
+					<li><a href="companyDetails?id=${register.id}&roleId=${register.roleId}"><span>Description</span></a></li>
+					<li class="treeview active"><a href="#"><span>Jobs</span> <i class="fa fa-angle-left pull-right"></i></a>
 						<ul class="treeview-menu">
 							<li><a href="companyJobs?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Job Posting</a></li>
 							<li><a href="companyApplication?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Applications Received</a></li>
-							<li><a href="companyReview?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Reviews</a></li>
+							<li class="active"><a href="companyReview?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Reviews</a></li>
 						</ul>
 					</li>
 				</ul>
 				</section>
 			<!-- /.sidebar -->
 			</aside>
-			
-	<!-- Content Wrapper. Contains page content -->
+
+			<!-- Content Wrapper. Contains page content -->
 	<div class="content-wrapper">
         <!-- Content Header (Page header) -->
-        <section class="content-header"><h1>Company Description Details</h1></section>
+        <section class="content-header"><h1>Review Details</h1></section>
         <!-- Main content -->
         <section class="content">
           <div class="row">
             <!-- left column -->
             <div class="col-md-12">
               <!-- general form elements -->
-              <div class="box box-info">
+              <div class="box box-warning">
                 <div class="box-header with-border">
                   <h3 class="box-title">Details</h3>
                 </div><!-- /.box-header -->
-                <!-- form start -->
-                <div class="box-body" id="companyeditableDescription" style="display: none;">
-                 <form:form action="saveCompanyDescription" method="post" enctype="multipart/form-data" commandName="companyDetails" >
-                	<div class="form-group">
-                	  <form:input class="form-control" type="hidden" id="registerId" name="registerId" path="registerId" value="${register.id}" />
-                	  <form:input class="form-control" type="hidden" id="roleId" name="roleId" path="roleId" value="${register.roleId}" />
-                	  <form:input class="form-control" type="hidden" id="coId" name="id" path="id" value="" />
-                	  <label>Website</label>
-                      <form:input type="text" class="form-control" id="cWebsite" path="website" placeholder="Website" value="${company.website}"  />
-                      <label>Domain</label>
-                      <form:input type="text" class="form-control" id="cDomain" path="domain" placeholder="Domain" value="${company.domain}"  />
-                      <label>Description</label>
-                      <form:textarea type="text" class="form-control" id="cDescription" path="description" placeholder="Description" value=""  />
-                      <label>Choose Logo</label>
-                      <form:input type="file" id="logoFile" name="logoFile" path="logoFile" placeholder="" />
-                    </div>
-                     <button id="btnSubmiter" style="float: right;margin-left: 2%;display: block;" type="submit" class="btn btn-success" value="Update" >Update</button>
-	            	 <button style="float: right;" type="button" class="btn btn-danger" onclick="hidingDetails(1)">Cancel</button>
-	             </form:form>
+                <div class="box-body" id="JobUDetails" style="display: block;">
+                    <c:if test="${overallRate == 0}">
+						<td style="width:10%;"><h3>Overall Ratings  : <img style="height: 20px;" src="<c:url value='/resources/bootstrap/images/zero.PNG' />" class="user-image" alt="0/5"></h3></td>
+					</c:if>
+                    <c:if test="${overallRate == 1}">
+						<td style="width:10%;"><h3>Overall Ratings  : <img style="height: 20px;" src="<c:url value='/resources/bootstrap/images/one.PNG' />" class="user-image" alt="1/5"></h3></td>
+					</c:if>
+					<c:if test="${overallRate == 2}">
+						<td style="width:10%;"><h3>Overall Ratings  : <img style="height: 20px;" src="<c:url value='/resources/bootstrap/images/two.PNG' />" class="user-image" alt="2/5"></h3></td>
+					</c:if>
+					<c:if test="${overallRate == 3}">
+						<td style="width:10%;"><h3>Overall Ratings  : <img style="height: 20px;" src="<c:url value='/resources/bootstrap/images/three.PNG' />" class="user-image" alt="3/5"></h3></td>
+					</c:if>
+					<c:if test="${overallRate == 4}">
+						<td style="width:10%;"><h3>Overall Ratings  : <img style="height: 20px;" src="<c:url value='/resources/bootstrap/images/four.PNG' />" class="user-image" alt="4/5"></h3></td>
+					</c:if>
+					<c:if test="${overallRate == 5}">
+						<td style="width:10%;"><h3>Overall Ratings  : <img style="height: 20px;" src="<c:url value='/resources/bootstrap/images/five.PNG' />" class="user-image" alt="5/5"></h3></td>
+					</c:if>
+                  <table id="review" class="table table dataTable"><!--  table table-bordered table-hover dataTable -->
+                    <thead class="no-sort">
+                      <tr>
+                      	<th style="display:none;width:1%;">reviewId</th>
+                        <th style="width:10%;">Applicant</th>
+                        <th style="width:10%;">Comments</th>
+                        <th style="width:10%;">Rate</th>
+                        <th style="width:10%;">Is it abusive?</th>
+                      </tr>
+                    </thead>
+                    <tbody id="reviewDetails">
+                      <c:forEach items="${reviewList}" var="reviewList">
+                      	<tr>
+                      		<td style="display:none;width:1%;">${reviewList.rateId}</td>
+							<td style="width:10%;">${reviewList.title}</td>
+							<td style="width:10%;">${reviewList.comments}</td>
+							<c:if test="${reviewList.stars == 1}">
+								<td style="width:10%;"><img style="height: 20px;" src="<c:url value='/resources/bootstrap/images/one.PNG' />" class="user-image" alt="1/5"></td>
+							</c:if>
+							<c:if test="${reviewList.stars == 2}">
+								<td style="width:10%;"><img style="height: 20px;" src="<c:url value='/resources/bootstrap/images/two.PNG' />" class="user-image" alt="2/5"></td>
+							</c:if>
+							<c:if test="${reviewList.stars == 3}">
+								<td style="width:10%;"><img style="height: 20px;" src="<c:url value='/resources/bootstrap/images/three.PNG' />" class="user-image" alt="3/5"></td>
+							</c:if>
+							<c:if test="${reviewList.stars == 4}">
+								<td style="width:10%;"><img style="height: 20px;" src="<c:url value='/resources/bootstrap/images/four.PNG' />" class="user-image" alt="4/5"></td>
+							</c:if>
+							<c:if test="${reviewList.stars == 5}">
+								<td style="width:10%;"><img style="height: 20px;" src="<c:url value='/resources/bootstrap/images/five.PNG' />" class="user-image" alt="5/5"></td>
+							</c:if>
+							<td style="width:10%;">
+								<span style="cursor: pointer;" onclick="report(${reviewList.rateId});" class="label label-warning">Report</span>
+							</td>
+                      	</tr>
+                      </c:forEach>
+                    </tbody>
+                  </table>
                 </div>
 
-                <div class="box-body" id="companyUneditableDescription" style="display: block;">
-                	<form role="form">
-	                  <div class="box-body">
-	                    <div class="form-group">
-	                      <input type="hidden" class="form-control" id="companyRegisterId" placeholder="id" disabled value="${register.id}">
-	                      <input type="hidden" class="form-control" id="companyRoleId" placeholder="id" disabled value="${register.roleId}">
-	                      <input type="hidden" class="form-control" id="companyId" placeholder="id" disabled value="${company.id}">
-	                      <label>Website</label>
-	                      <input type="text" class="form-control" id="cWebsite" placeholder="Website" value="${company.website}" disabled>
-	                      <label>Domain</label>
-	                      <input type="text" class="form-control" id="dDomain" placeholder="Domain" value="${company.domain}" disabled />
-	                      <label>Description</label>
-	                      <textarea type="text" class="form-control" id="dDescription" placeholder="Description" disabled>${company.description}</textarea>
-	                    </div>
-	                  </div><!-- /.box-body -->
-	                  <div class="box-footer">
-	                    <button style="float: right;" type="button" class="btn btn-info" onclick="hidingDetails(2)">Edit</button>
-	                  </div>
-	                </form>
-                </div><!-- /.box-body -->
+                
               </div><!-- /.box -->
 		      <div >
 		      </div>
@@ -178,6 +201,21 @@ function hidingDetails(value){
    </footer>
 
  </div><!-- ./wrapper -->
+ 
+ <script type="text/javascript">
+
+$(function () {
+    $('#review').dataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false
+    });
+  });
+
+</script>
  
  <!-- Modals  -->
 	<div id="ResetPasswordModal" class="modal">
@@ -206,5 +244,7 @@ function hidingDetails(value){
          </div><!-- /.modal-content -->
        </div><!-- /.modal-dialog -->
     </div>
+    
+    
 </body>
 </html>

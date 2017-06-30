@@ -86,13 +86,13 @@ function deleteFile(testId){
 						<!-- User Account: style can be found in dropdown.less -->
 						<li class="dropdown user user-menu">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<img src="<c:url value='/resources/bootstrap/images/male.png' />" class="user-image" alt="User Image">
+							<img src="<c:url value='/resources/bootstrap/images/dummy.png' />" class="user-image" alt="User Image">
 							<span class="hidden-xs">Settings <i class="fa fa-gears"></i></span>
 						</a>
 						<ul class="dropdown-menu">
 							<!-- User image -->
 							<li class="user-header">
-								<img src="<c:url value='/resources/bootstrap/images/male.png' />" class="img-circle" alt="User Image">
+								<img src="<c:url value='/resources/bootstrap/images/dummy.png' />" class="img-circle" alt="User Image">
 								<p>${register.fullname}<small>Member since ${register.sDate}</small></p>
 							</li>
 							<!-- Menu Footer-->
@@ -117,7 +117,7 @@ function deleteFile(testId){
           <!-- Sidebar user panel -->
           <div class="user-panel">
             <div class="pull-left image">
-              <img src="<c:url value='/resources/bootstrap/images/male.png' />" class="img-circle" alt="User Image">
+              <img src="<c:url value='/resources/bootstrap/images/dummy.png' />" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
               <p>${register.fullname}</p>
@@ -160,11 +160,11 @@ function deleteFile(testId){
                 <span>Counselor</span>
               </a>
             </li>
-            <%-- <li class="active treeview">
-              <a href="adminTest?id=${register.id}&roleId=${register.roleId}">
-                <span>Test</span>
+             <li class="treeview">
+              <a href="adminReview?id=${register.id}&roleId=${register.roleId}">
+                <span>Company Review</span>
               </a>
-            </li> --%>
+            </li>
             <li class="treeview active"><a href="#"><span>Test</span> <i class="fa fa-angle-left pull-right"></i></a>
 				<ul class="treeview-menu">
 					<li class="active"><a href="adminTest?id=${register.id}&roleId=${register.roleId}"><i class="fa fa-circle-o"></i> Tests</a></li>
