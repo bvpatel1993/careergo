@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.albany.career.dto.KeyValueDto;
+import com.albany.career.entity.ProfileHits;
 import com.albany.career.entity.Registration;
 import com.albany.career.entity.Roles;
 import com.albany.career.service.AdminService;
@@ -93,7 +94,15 @@ public class LoginController {
 					register.setVerified(false);
 					register.setDate(new Date());
 					register.setRole(role);
+					register.setHits((long)0);
 					fresponse = loginService.saveProfileInfo(register);
+					/*if(fresponse.getFlag() && roleId == 1){
+						ProfileHits profile = new ProfileHits();
+						profile.setHits((long)0);
+						profile.setStatus(true);
+						profile.setRegister(applicantService.getRegistratioDetails(id));
+						loginService.saveProfileHits(profile);
+					}*/
 				}catch(Exception e){
 					e.printStackTrace();
 				}

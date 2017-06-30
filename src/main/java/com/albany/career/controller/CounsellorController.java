@@ -56,6 +56,8 @@ public class CounsellorController {
 	public String counselorBasicProfile(ModelMap model,Long id, Long roleId){
 		KeyValueDto register = counsellorService.getCounsellorDetails(id,roleId);
 		model.addAttribute("register", register);
+		CounselorDto counsellor = counsellorService.getCounselorDescription(id);
+		model.addAttribute("counsellor", counsellor);//Profile Photo
 		return "counselorPersonal";
 	}
 	
@@ -77,6 +79,8 @@ public class CounsellorController {
 		KeyValueDto register = counsellorService.getCounsellorDetails(id,roleId);
 		model.addAttribute("register", register);
 		model.addAttribute("replyForum", replyForum);
+		CounselorDto counsellor = counsellorService.getCounselorDescription(id);
+		model.addAttribute("counsellor", counsellor);//Profile Photo
 		return "counselorForum";
 	}
 	

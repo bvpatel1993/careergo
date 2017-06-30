@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.albany.career.dto.ApplicantDto;
+import com.albany.career.dto.CompanyDto;
 import com.albany.career.dto.CounselorDto;
 import com.albany.career.dto.KeyValueDto;
 import com.albany.career.entity.ApplicantForum;
@@ -30,8 +32,11 @@ import com.albany.career.entity.Degree;
 import com.albany.career.entity.DocumentType;
 import com.albany.career.entity.DocumentsDetails;
 import com.albany.career.entity.EducationDetails;
+import com.albany.career.entity.JobPosts;
+import com.albany.career.entity.JobsApplied;
 import com.albany.career.entity.Major;
 import com.albany.career.entity.ProjectDetails;
+import com.albany.career.entity.Rating;
 import com.albany.career.entity.Registration;
 import com.albany.career.entity.SkillsDetails;
 import com.albany.career.entity.TestInfo;
@@ -65,6 +70,8 @@ public class ApplicantController {
 	public String applicantProfile(ModelMap model,Long id, Long roleId){
 		KeyValueDto register = applicantService.getApplicantDetails(id,roleId);
 		model.addAttribute("register", register);
+		DocumentsDetails docs = applicantService.getPhotoDetails(id);//Recent Profile Photo based on registerId
+		model.addAttribute("docs", docs);
 		return "applicantPersonalDetails";
 	}
 	
@@ -79,6 +86,8 @@ public class ApplicantController {
 		KeyValueDto register = applicantService.getApplicantDetails(id,roleId);
 		model.addAttribute("register", register);
 		model.addAttribute("eduction", eduction);
+		DocumentsDetails docs = applicantService.getPhotoDetails(id);//Recent Profile Photo based on registerId
+		model.addAttribute("docs", docs);
 		return "applicantEducationDetails";
 	}
 	
@@ -86,8 +95,10 @@ public class ApplicantController {
 	public String applicantSkills(ModelMap model,Long id, Long roleId){
 		KeyValueDto register = applicantService.getApplicantDetails(id,roleId);
 		model.addAttribute("register", register);
-		ApplicantDto skills = applicantService.getSkillsDetails();
+		ApplicantDto skills = applicantService.getSkills(id);
 		model.addAttribute("skills", skills);
+		DocumentsDetails docs = applicantService.getPhotoDetails(id);//Recent Profile Photo based on registerId
+		model.addAttribute("docs", docs);
 		return "applicantSkills";
 	}
 	
@@ -98,6 +109,8 @@ public class ApplicantController {
 		KeyValueDto register = applicantService.getApplicantDetails(id,roleId);
 		model.addAttribute("register", register);
 		model.addAttribute("projects", projects);
+		DocumentsDetails docs = applicantService.getPhotoDetails(id);//Recent Profile Photo based on registerId
+		model.addAttribute("docs", docs);
 		return "applicantProjects";
 	}
 	
@@ -108,6 +121,8 @@ public class ApplicantController {
 		KeyValueDto register = applicantService.getApplicantDetails(id,roleId);
 		model.addAttribute("register", register);
 		model.addAttribute("work", work);
+		DocumentsDetails docs = applicantService.getPhotoDetails(id);//Recent Profile Photo based on registerId
+		model.addAttribute("docs", docs);
 		return "applicantWorkExperience";
 	}
 	
@@ -118,6 +133,8 @@ public class ApplicantController {
 		model.addAttribute("certificate", certificate);
 		KeyValueDto register = applicantService.getApplicantDetails(id,roleId);
 		model.addAttribute("register", register);
+		DocumentsDetails docs = applicantService.getPhotoDetails(id);//Recent Profile Photo based on registerId
+		model.addAttribute("docs", docs);
 		return "applicantCertifications";
 	}
 	
@@ -130,6 +147,8 @@ public class ApplicantController {
 		model.addAttribute("docsTypes", docsTypes);
 		List<ApplicantDto> docsList = applicantService.getDoumentsList(id);
 		model.addAttribute("docsList", docsList);
+		DocumentsDetails docs = applicantService.getPhotoDetails(id);//Recent Profile Photo based on registerId
+		model.addAttribute("docs", docs);
 		return "applicantDocuments";
 	}
 	
@@ -329,6 +348,8 @@ public class ApplicantController {
 		KeyValueDto register = applicantService.getApplicantDetails(id,roleId);
 		model.addAttribute("register", register);
 		model.addAttribute("messagesForum", messagesForum);
+		DocumentsDetails docs = applicantService.getPhotoDetails(id);//Recent Profile Photo based on registerId
+		model.addAttribute("docs", docs);
 		return "applicantForum";
 	}
 	
@@ -371,6 +392,8 @@ public class ApplicantController {
 		model.addAttribute("register", register);
 		List<KeyValueDto> testList = adminService.getTestList();
 		model.addAttribute("testList",testList);
+		DocumentsDetails docs = applicantService.getPhotoDetails(id);//Recent Profile Photo based on registerId
+		model.addAttribute("docs", docs);
 		return "applicantTest";
 	}
 	
@@ -400,6 +423,8 @@ public class ApplicantController {
 		List<KeyValueDto> testList = applicantService.getApplicantTestList(id);
 		model.addAttribute("testList",testList);
 		model.addAttribute("testData",testData);
+		DocumentsDetails docs = applicantService.getPhotoDetails(id);//Recent Profile Photo based on registerId
+		model.addAttribute("docs", docs);
 		return "applicantTestGrade";
 	}
 	
@@ -428,4 +453,119 @@ public class ApplicantController {
 		}
 		return resposne;
 	}
+	
+	@RequestMapping(value="/applicantJobLists", method = RequestMethod.GET)
+	public String applicantJobLists(ModelMap model,Long id, Long roleId){
+		KeyValueDto register = applicantService.getApplicantDetails(id,roleId);
+		model.addAttribute("register", register);
+		List<CompanyDto> jobList = applicantService.getJobsList(id);
+		model.addAttribute("jobList", jobList);
+		DocumentsDetails docs = applicantService.getPhotoDetails(id);//Recent Profile Photo based on registerId
+		model.addAttribute("docs", docs);
+		return "applicantJobLists";
+	}
+	
+	@RequestMapping(value="/applyJobs", method = {RequestMethod.POST })
+	@ResponseBody
+	public FunctionResponse applyJobs(Long jobId, Long applicantId){
+		JobsApplied jobApply = new JobsApplied();
+		jobApply.setDate(new Date());
+		jobApply.setStatus(true);
+		jobApply.setJob(companyService.getJob(jobId));
+		jobApply.setCompanyResponse("NA");
+		jobApply.setRegister(applicantService.getRegistratioDetails(applicantId));
+		FunctionResponse response = applicantService.updateJobApplied(jobApply);
+		return response;
+	}
+	
+	@RequestMapping(value="/applicantJobApplied", method = RequestMethod.GET)
+	public String applicantJobApplied(ModelMap model,Long id, Long roleId){
+		KeyValueDto register = applicantService.getApplicantDetails(id,roleId);
+		model.addAttribute("register", register);
+		List<CompanyDto> jobList = applicantService.getJobsAppliedList(id);
+		model.addAttribute("jobList", jobList);
+		DocumentsDetails docs = applicantService.getPhotoDetails(id);//Recent Profile Photo based on registerId
+		model.addAttribute("docs", docs);
+		return "applicantJobsApplied";
+	}
+	
+	@RequestMapping(value="/applicantProfileInfo", method = RequestMethod.GET)
+	public String applicantProfileInfo(ModelMap model,Long id, Long roleId){
+		KeyValueDto register = applicantService.getApplicantDetails(id,roleId);//,Long id, Long roleId
+		model.addAttribute("register", register);
+		List<ApplicantDto> educationList = applicantService.getEducationList(id);
+		model.addAttribute("educationList", educationList);
+		List<ApplicantDto> projectsList = applicantService.getProjectsList(id);
+		model.addAttribute("projectsList", projectsList);
+		List<ApplicantDto> workList = applicantService.getWorkList(id);
+		model.addAttribute("workList", workList);
+		List<ApplicantDto> certificateList = applicantService.getCertificateList(id);
+		model.addAttribute("certificateList", certificateList);
+		List<ApplicantDto> docsList = applicantService.getDoumentsList(id);
+		model.addAttribute("docsList", docsList);
+		List<KeyValueDto> testList = applicantService.getApplicantTestList(id);
+		model.addAttribute("testList",testList);
+		ApplicantDto skills = applicantService.getSkills(id);
+		model.addAttribute("skills", skills);
+		DocumentsDetails docs = applicantService.getPhotoDetails(id);//Recent Profile Photo based on registerId
+		model.addAttribute("docs", docs);
+		return "applicantProfileInfo";
+	}
+	
+	@RequestMapping(value="/applicantReview", method = RequestMethod.GET)
+	public String applicantReview(ModelMap model,Long id, Long roleId){
+		KeyValueDto register = applicantService.getApplicantDetails(id,roleId);
+		model.addAttribute("register", register);
+		List<KeyValueDto> companyList = applicantService.getCompanyList();
+		model.addAttribute("companyList", companyList);
+		DocumentsDetails docs = applicantService.getPhotoDetails(id);//Recent Profile Photo based on registerId
+		model.addAttribute("docs", docs);
+		return "applicantReview";
+	}
+	
+	@RequestMapping(value="/ratings", method = {RequestMethod.POST })
+	@ResponseBody
+	public FunctionResponse ratings(Long companyId, Long applicantId, Integer rate, String comment){
+		Rating rates = new Rating();
+		rates.setComments(comment);
+		rates.setStars(rate);
+		rates.setStatus(true);
+		rates.setVerified(true);
+		rates.setApplicant(applicantService.getRegistratioDetails(applicantId));
+		rates.setCompany(applicantService.getRegistratioDetails(companyId));
+		FunctionResponse response = applicantService.updateCompanyRatings(rates);
+		return response;
+	}
+	
+	@RequestMapping(value="/getProfilePhoto",method=RequestMethod.GET)
+    public String getProfilePhoto(HttpServletResponse response,Long id) {
+		List<ApplicantDto> doc = applicantService.getDoumentsListForPhotos(id);
+		DocumentsDetails docs = null;
+		if(doc.size() > 0){
+			Collections.reverse(doc);
+			docs = applicantService.getDocumentDetails(doc.get(0).getDocId());//Recent Profile Photo
+		}
+        if(docs !=null)
+        {
+        try {
+        	 response.setHeader("Content-Disposition", "inline;filename=\"" +docs.getDocumentName()+ "\"");
+            OutputStream out = response.getOutputStream();
+            response.setContentType(docs.getDocumentType());
+            Blob testfile = docs.getDocument();
+            if(testfile != null){
+	            IOUtils.copy(testfile.getBinaryStream(), out);
+            }else{
+            	out.write(0);
+            }
+            out.flush();
+            out.close();
+         
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        }
+        return null;
+    }
 }

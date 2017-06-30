@@ -26,6 +26,7 @@ import com.albany.career.dto.CompanyDto;
 import com.albany.career.dto.CounselorDto;
 import com.albany.career.dto.KeyValueDto;
 import com.albany.career.entity.ApplicantGrade;
+import com.albany.career.entity.Rating;
 import com.albany.career.entity.Registration;
 import com.albany.career.entity.TestInfo;
 import com.albany.career.service.AdminService;
@@ -184,6 +185,24 @@ public class AdminController {
 		ApplicantGrade grade = applicantService.getApplicantGradeObj(testId);
 		grade.setMarks(marks);
 		FunctionResponse response = applicantService.saveApplicantKeys(grade);
+		return response;
+	}
+	
+	@RequestMapping(value="/adminReview", method = RequestMethod.GET)
+	public String adminReview(ModelMap model,Long id, Long roleId){
+		KeyValueDto register = adminService.getAdminDetails(id,roleId);
+		model.addAttribute("register", register);
+		List<CompanyDto> reviewList = adminService.getAbusiveReviewList();
+		model.addAttribute("reviewList", reviewList);
+		return "adminReview";
+	}
+	
+	@RequestMapping(value="/deleteAbusiveRating", method = {RequestMethod.POST })
+	@ResponseBody
+	public FunctionResponse deleteAbusiveRating(Long reviewId){
+		Rating rates = companyService.getRatings(reviewId);
+		rates.setStatus(false);
+		FunctionResponse response = applicantService.updateCompanyRatings(rates);
 		return response;
 	}
 }
