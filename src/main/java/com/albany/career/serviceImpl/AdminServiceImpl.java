@@ -167,4 +167,16 @@ public class AdminServiceImpl implements AdminService {
 		return testList;
 	}
 
+	@Transactional
+	public List<CompanyDto> getAbusiveReviewList() {
+		List<CompanyDto> review = adminDao.getAbusiveReviewList();
+		for (CompanyDto companyDto : review) {
+			companyDto.setTitle(companyDto.getName()+" "+companyDto.getCompanyname());//Applicant Name
+		}
+		if(review.size() > 0){
+			Collections.reverse(review);
+		}
+		return review;
+	}
+
 }

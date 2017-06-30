@@ -14,6 +14,7 @@ import com.albany.career.dao.CompanyDao;
 import com.albany.career.dao.CounsellorDao;
 import com.albany.career.dao.LoginDao;
 import com.albany.career.dto.ApplicantDto;
+import com.albany.career.dto.CompanyDto;
 import com.albany.career.dto.KeyValueDto;
 import com.albany.career.entity.ApplicantForum;
 import com.albany.career.entity.ApplicantGrade;
@@ -23,8 +24,10 @@ import com.albany.career.entity.Degree;
 import com.albany.career.entity.DocumentType;
 import com.albany.career.entity.DocumentsDetails;
 import com.albany.career.entity.EducationDetails;
+import com.albany.career.entity.JobsApplied;
 import com.albany.career.entity.Major;
 import com.albany.career.entity.ProjectDetails;
+import com.albany.career.entity.Rating;
 import com.albany.career.entity.Registration;
 import com.albany.career.entity.SkillsDetails;
 import com.albany.career.entity.WorkDetails;
@@ -117,9 +120,9 @@ public class ApplicantServiceImpl implements ApplicantService {
 	}
 
 	@Transactional
-	public ApplicantDto getSkillsDetails() {
+	public ApplicantDto getSkills(Long id) {
 		// TODO Auto-generated method stub
-		return applicantDao.getSkillsDetails();
+		return applicantDao.getSkills(id);
 	}
 
 	@Transactional
@@ -349,6 +352,104 @@ public class ApplicantServiceImpl implements ApplicantService {
 	public ApplicantGrade getApplicantGradeObj(Long id) {
 		// TODO Auto-generated method stub
 		return applicantDao.getApplicantGradeObj(id);
+	}
+
+	@Transactional
+	public List<CompanyDto> getJobsList(Long registerId) {
+		List<CompanyDto> jobs = companyDao.getJobsList();
+		List<ApplicantDto> jobApplied = applicantDao.getJobsApplied(registerId);
+		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+		if(jobApplied.size() > 0){
+			for (CompanyDto companyDto : jobs) {
+				for (ApplicantDto applicantDto : jobApplied) {
+					if(companyDto.getJobId().equals(applicantDto.getJobPostId())){
+						companyDto.setbStatus(true);break;
+					}else{
+						companyDto.setbStatus(false);
+					}
+				}
+				companyDto.setsDate(df.format(companyDto.getCreatedDate()));
+			}
+		}else{
+			for (CompanyDto companyDto : jobs) {
+				companyDto.setsDate(df.format(companyDto.getCreatedDate()));
+				companyDto.setbStatus(false);
+			}
+		}
+		if(jobs.size() > 0){
+			Collections.reverse(jobs);
+		}
+		return jobs;
+	}
+
+	@Transactional
+	public FunctionResponse updateJobApplied(JobsApplied jobApply) {
+		// TODO Auto-generated method stub
+		return applicantDao.updateJobApplied(jobApply);
+	}
+
+	@Transactional
+	public List<CompanyDto> getJobsAppliedList(Long id) {
+		List<CompanyDto> jobs = applicantDao.getJobsAppliedList(id);
+		for (CompanyDto companyDto : jobs) {
+			SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+			companyDto.setsDate(df.format(companyDto.getCreatedDate()));
+		}
+		if(jobs.size() > 0){
+			Collections.reverse(jobs);
+		}
+		return jobs;
+	}
+
+	@Transactional
+	public List<KeyValueDto> getCompanyList() {
+		List<KeyValueDto> company = applicantDao.getCompanyList();
+		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+		for (KeyValueDto keyValueDto : company) {
+			keyValueDto.setsDate(df.format(keyValueDto.getDate()));
+			List<CompanyDto> rating = applicantDao.getCompanyRates(keyValueDto.getId());
+			int overallRate = 0;
+			if(rating.size() > 0){
+				int count = rating.size();
+				int totalRate = 0;
+				for (CompanyDto companyDto : rating) {
+					totalRate = totalRate + companyDto.getStars();
+				}
+				overallRate = totalRate/count;
+			}else{
+				overallRate = 0;
+			}
+			keyValueDto.setStars(overallRate);
+		}
+		if(company.size() > 0){
+			Collections.reverse(company);
+		}
+		return company;
+	}
+
+	@Transactional
+	public FunctionResponse updateCompanyRatings(Rating rates) {
+		// TODO Auto-generated method stub
+		return applicantDao.updateCompanyRatings(rates);
+	}
+
+	@Transactional
+	public List<ApplicantDto> getDoumentsListForPhotos(Long id) {
+		// TODO Auto-generated method stub
+		return applicantDao.getDoumentsListForPhotos(id);
+	}
+
+	@Transactional
+	public DocumentsDetails getPhotoDetails(Long id) {
+		List<ApplicantDto> doc = applicantDao.getDoumentsListForPhotos(id);
+		DocumentsDetails docs = null;
+		if(doc.size() > 0){
+			Collections.reverse(doc);
+			docs = applicantDao.getDocumentDetails(doc.get(0).getDocId());//Recent Profile Photo
+		}else{
+			docs = null;
+		}
+		return docs;
 	}
 
 }
