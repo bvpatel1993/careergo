@@ -32,6 +32,8 @@ public interface AdminService {
 
 	List<KeyValueDto> getTestInfoToGrade();
 
+	List<CompanyDto> getAbusiveReviewList();
+
 
 
 }
