@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import com.albany.career.dao.ApplicantDao;
 import com.albany.career.dto.ApplicantDto;
+import com.albany.career.dto.CompanyDto;
 import com.albany.career.dto.KeyValueDto;
 import com.albany.career.entity.ApplicantForum;
 import com.albany.career.entity.ApplicantGrade;
@@ -21,8 +22,10 @@ import com.albany.career.entity.Degree;
 import com.albany.career.entity.DocumentType;
 import com.albany.career.entity.DocumentsDetails;
 import com.albany.career.entity.EducationDetails;
+import com.albany.career.entity.JobsApplied;
 import com.albany.career.entity.Major;
 import com.albany.career.entity.ProjectDetails;
+import com.albany.career.entity.Rating;
 import com.albany.career.entity.Roles;
 import com.albany.career.entity.SkillsDetails;
 import com.albany.career.entity.WorkDetails;
@@ -97,9 +100,10 @@ public class ApplicantDaoImpl extends HibernateDaoSupport implements ApplicantDa
 		return edu;
 	}
 
-	public ApplicantDto getSkillsDetails() {
-		String hql = "SELECT new com.albany.career.dto.ApplicantDto(skill.id,skill.skills,skill.status,register.id) FROM SkillsDetails as skill left outer join skill.register as register where skill.status = "+true;
+	public ApplicantDto getSkills(Long id) {
+		String hql = "SELECT new com.albany.career.dto.ApplicantDto(skill.id,skill.skills,skill.status,register.id) FROM SkillsDetails as skill left outer join skill.register as register where skill.status = "+true+" and register.id = :rId";
 		Query query = getHibernate().getSessionFactory().getCurrentSession().createQuery(hql.toString());
+		query.setParameter("rId", id);
 		List results = query.list();
 		if(results != null && results.size() > 0){
 			return (ApplicantDto) results.get(0);
@@ -361,5 +365,84 @@ public class ApplicantDaoImpl extends HibernateDaoSupport implements ApplicantDa
 			return (ApplicantGrade) results.get(0);
 		}
 		return null;
+	}
+
+	public List<ApplicantDto> getJobsApplied(Long registerId) {
+		String hql = "SELECT new com.albany.career.dto.ApplicantDto(jobs.id,jobPost.id,register.id,jobs.companyResponse,jobs.status,jobs.date) FROM JobsApplied as jobs"
+				+" left outer join jobs.register as register left outer join jobs.job jobPost where register.id = :rId and jobs.status = "+true;
+		Query query = getHibernate().getSessionFactory().getCurrentSession().createQuery(hql.toString());
+		query.setParameter("rId", registerId);
+		List results = query.list();
+		return results;
+	}
+
+	public FunctionResponse updateJobApplied(JobsApplied jobApply) {
+		FunctionResponse response = new FunctionResponse();
+		try{
+			getHibernateTemplate().saveOrUpdate(jobApply);
+			response.setFlag(true);
+			response.setMessage("Job Applied Successfully");
+		}catch(Exception e){
+			e.printStackTrace();
+			response.setFlag(false);
+			response.setMessage("Job Application Failed");
+		}
+		return response;
+	}
+
+	public List<CompanyDto> getJobsAppliedList(Long id) {
+		String hql = "SELECT new com.albany.career.dto.CompanyDto(work.id,jobPost.id,applicant.id,company.lastname,jobPost.title,jobPost.jobDescription,jobPost.jobLocation,jobPost.salary,jobPost.phone,jobPost.email,jType.jobType,work.companyResponse,work.date,work.status) FROM JobsApplied as work"
+				+" left outer join work.job as jobPost"
+				+" left outer join jobPost.register as company"
+				+" left outer join jobPost.jobs as jType"
+				+" left outer join work.register as applicant where applicant.id = :rId and work.status = "+true;
+		Query query = getHibernate().getSessionFactory().getCurrentSession().createQuery(hql.toString());
+		query.setParameter("rId", id);
+		List results = query.list();
+		return results;
+	}
+
+	public List<KeyValueDto> getCompanyList() {
+		String hql = "SELECT new com.albany.career.dto.KeyValueDto(register.id,register.firstname,register.lastname,register.email,register.phone,register.location,register.gender,register.verified,register.date,role.id,register.hits) FROM Registration as register"
+				+" left outer join register.role as role where register.status = "+true+" and role.id = :roleId";
+		Query query = getHibernate().getSessionFactory().getCurrentSession().createQuery(hql.toString());
+		query.setParameter("roleId",(long) 2);
+		//query.setParameter("id", id);
+		List results = query.list();
+		return results;
+	}
+
+	public List<CompanyDto> getCompanyRates(Long id) {
+		String hql = "SELECT new com.albany.career.dto.CompanyDto(rate.id,company.id,applicant.id,rate.comments,rate.stars,rate.verified,rate.status) FROM Rating as rate"
+				+" left outer join rate.company as company"
+				+" left outer join rate.applicant as applicant where company.id = :rId and rate.status = "+true;
+		Query query = getHibernate().getSessionFactory().getCurrentSession().createQuery(hql.toString());
+		query.setParameter("rId", id);
+		List results = query.list();
+		return results;
+	}
+	
+	public FunctionResponse updateCompanyRatings(Rating rates) {
+		FunctionResponse response = new FunctionResponse();
+		try{
+			getHibernateTemplate().saveOrUpdate(rates);
+			response.setFlag(true);
+			response.setMessage("Review Updated Successfully");
+		}catch(Exception e){
+			e.printStackTrace();
+			response.setFlag(false);
+			response.setMessage("Reviewing Failed");
+		}
+		return response;
+	}
+	
+	public List<ApplicantDto> getDoumentsListForPhotos(Long id) {
+		String hql = "SELECT new com.albany.career.dto.ApplicantDto(docs.id,register.id,docs.documentName,docs.documentType,docs.status,documents.id,documents.documentType) FROM DocumentsDetails as docs"
+				+" left outer join docs.register as register left outer join docs.documents as documents where docs.status = "+true+" and register.id = :rId and documents.id = :type";
+		Query query = getHibernate().getSessionFactory().getCurrentSession().createQuery(hql.toString());
+		query.setParameter("rId", id);
+		query.setParameter("type", (long)3);
+		List results = query.list();
+		return results;
 	}
 }

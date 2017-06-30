@@ -61,7 +61,7 @@ public class AdminDaoImpl extends HibernateDaoSupport implements AdminDao {
 	}
 
 	public KeyValueDto getRegistrationDetails(Long id, Long roleId) {
-		String hql = "SELECT new com.albany.career.dto.KeyValueDto(register.id,register.firstname,register.lastname,register.email,register.phone,register.location,register.gender,register.verified,register.date,role.id) FROM Registration as register"
+		String hql = "SELECT new com.albany.career.dto.KeyValueDto(register.id,register.firstname,register.lastname,register.email,register.phone,register.location,register.gender,register.verified,register.date,role.id,register.hits) FROM Registration as register"
 				+" left outer join register.role as role where register.status = "+true+" and role.id = :roleId and register.id = :id";
 		Query query = getHibernate().getSessionFactory().getCurrentSession().createQuery(hql.toString());
 		query.setParameter("roleId", roleId);
@@ -109,6 +109,15 @@ public class AdminDaoImpl extends HibernateDaoSupport implements AdminDao {
 				+" left outer join testInfo.test as test where grade.status = "+true;
 		Query query = getHibernate().getSessionFactory().getCurrentSession().createQuery(hql.toString());
 		//query.setParameter("registerId", (long)4);
+		List results = query.list();
+		return results;
+	}
+
+	public List<CompanyDto> getAbusiveReviewList() {
+		String hql = "SELECT new com.albany.career.dto.CompanyDto(rate.id,company.id,applicant.id,applicant.firstname,applicant.lastname,company.lastname,rate.comments,rate.stars,rate.verified,rate.status) FROM Rating as rate"
+				+" left outer join rate.company as company"
+				+" left outer join rate.applicant as applicant where rate.verified = "+false+" and rate.status ="+true;
+		Query query = getHibernate().getSessionFactory().getCurrentSession().createQuery(hql.toString());
 		List results = query.list();
 		return results;
 	}
